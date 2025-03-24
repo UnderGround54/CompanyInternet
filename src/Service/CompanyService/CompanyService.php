@@ -29,10 +29,11 @@ class CompanyService
 
         if ($user instanceof User) {
             $queryBuilder = $this->entityManager->getRepository(Company::class)->findCompanyByUser($user);
-            $pagination = $this->paginationService->paginate($queryBuilder, $request);
         } else {
-            $pagination = $this->paginationService->paginate(Company::class, $request);
+            $queryBuilder = $this->entityManager->getRepository(Company::class)->findCompanyByClient($user);
+
         }
+        $pagination = $this->paginationService->paginate($queryBuilder, $request);
 
         $pagination['items'] = $this->serializerService->serializeData($pagination['items'], 'company:read');
 

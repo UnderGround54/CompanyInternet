@@ -37,10 +37,10 @@ class ClientService
 
         if ($user instanceof User) {
             $queryBuilder = $this->entityManager->getRepository(Client::class)->findClientByUser($user);
-            $pagination = $this->paginationService->paginate($queryBuilder, $request);
         } else {
-            $pagination = $this->paginationService->paginate(Client::class, $request);
+            $queryBuilder = $this->entityManager->getRepository(Client::class)->findClientCompany();
         }
+        $pagination = $this->paginationService->paginate($queryBuilder, $request);
 
         $pagination['items'] = $this->serializerService->serializeData($pagination['items'], 'client:read');
 

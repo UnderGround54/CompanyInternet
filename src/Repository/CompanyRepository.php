@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Client;
 use App\Entity\Company;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -29,5 +30,18 @@ class CompanyRepository extends ServiceEntityRepository
             ->join('c.user', 'u')
             ->where('u.id = :userId')
             ->setParameter('userId', $user->getId());
+    }
+
+    /**
+     *
+     * @param Client $client
+     * @return QueryBuilder
+     */
+    public function findCompanyByClient(Client $client): QueryBuilder
+    {
+        return $this->createQueryBuilder('c')
+            ->join('c.clients', 'cl')
+            ->where('cl.id = :clientId')
+            ->setParameter('clientId', $client->getId());
     }
 }
