@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\MappedSuperclass]
 abstract class Person implements UserInterface, PasswordAuthenticatedUserInterface
@@ -12,15 +13,19 @@ abstract class Person implements UserInterface, PasswordAuthenticatedUserInterfa
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['client:read'])]
     protected ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['client:read', 'client:write'])]
     protected ?string $name = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['client:read', 'client:write'])]
     protected ?string $email = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['client:write'])]
     protected ?string $password = null;
 
     public function getId(): ?int

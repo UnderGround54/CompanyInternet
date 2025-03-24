@@ -27,10 +27,10 @@ class SerializerService
     /**
      * @param $data
      * @param string $type
-     * @param string $group
+     * @param string|null $group
      * @return mixed|object|string
      */
-    public function deserializeData($data, string $type, string $group): mixed
+    public function deserializeData($data, string $type, string $group = null): mixed
     {
         return $this->serializer->deserialize($data, $type, 'json', ['groups' => $group]);
     }
