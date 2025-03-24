@@ -1,0 +1,14 @@
+include:
+  - company.yml
+App\Entity\User:
+  #User
+  user_1:
+    name: Admin Yas
+    email: admin.yas@yoopmail.com
+    password: 123456
+    company: '@company_1'
+  user_2:
+    name: Admin Orange
+    email: admin.orange@yoopmail.com
+    password: 123456
+    company: '@company_2'

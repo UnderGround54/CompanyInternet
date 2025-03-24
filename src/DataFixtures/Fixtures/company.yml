@@ -1,0 +1,8 @@
+App\Entity\Company:
+  #Company
+  company_1:
+    label: Yas
+    places: Galaxy
+  company_2:
+    label: Orange
+    places: Tour Orange
