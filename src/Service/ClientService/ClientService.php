@@ -7,6 +7,7 @@ use App\Dto\ClientListDto;
 use App\Dto\CompanyIdDto;
 use App\Entity\Company;
 use App\Entity\Client;
+use App\Service\EmailService;
 use App\Service\PaginationService;
 use App\Service\ResponseService;
 use App\Service\SerializerService;
@@ -28,6 +29,7 @@ class ClientService
         private readonly PaginationService $paginationService,
         private readonly ValidateDataService  $validateDataService,
         private readonly UserPasswordHasherInterface $passwordHasher,
+        private EmailService  $emailService,
     ) {}
 
     public function getClients(Request $request): JsonResponse
@@ -58,6 +60,7 @@ class ClientService
     public function createOrUpdateClient(?int $id, Request $request): JsonResponse
     {
         $client = $id ? $this->entityManager->getRepository(Client::class)->find($id) : new Client();
+
         if ($id && !$client) {
             return $this->responseService->error([], 'Client not found', Response::HTTP_NOT_FOUND);
         }
@@ -78,6 +81,8 @@ class ClientService
         $client->setName($clientDto->name);
         $client->setEmail($clientDto->email);
         $client->addCompany($company);
+
+        $this->emailService->sendUserCredentialsEmail($clientDto->email, $clientDto->name , $clientDto->password, "https://www.adrware.mg/");
 
         $hashedPassword = $this->passwordHasher->hashPassword($client, $clientDto->password);
         $client->setPassword($hashedPassword);
