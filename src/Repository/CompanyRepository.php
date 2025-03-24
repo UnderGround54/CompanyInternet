@@ -19,7 +19,6 @@ class CompanyRepository extends ServiceEntityRepository
     }
 
     /**
-     * Filtrer les clients par entreprise.
      *
      * @param User $user
      * @return QueryBuilder

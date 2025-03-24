@@ -10,6 +10,7 @@ use App\Service\ResponseService;
 use App\Service\SerializerService;
 use App\Service\ValidateDataService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,12 +26,17 @@ class ClientService
         private readonly ValidatorInterface $validator,
         private readonly PaginationService $paginationService,
         private readonly ValidateDataService  $validateDataService,
-        private readonly UserPasswordHasherInterface $passwordHasher
+        private readonly UserPasswordHasherInterface $passwordHasher,
+        private readonly Security $security
     ) {}
 
     public function getClients(Request $request): JsonResponse
     {
-        $pagination = $this->paginationService->paginate(Client::class, $request);
+        $user = $this->security->getUser();
+
+        $queryBuilder = $this->entityManager->getRepository(Client::class)->findClientByUser($user);
+
+        $pagination = $this->paginationService->paginate($queryBuilder, $request);
         $pagination['items'] = $this->serializerService->serializeData($pagination['items'], 'client:read');
 
         return $this->responseService->success($pagination);
