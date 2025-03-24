@@ -14,7 +14,7 @@ final class ClientController extends AbstractController
 {
     public function __construct(private readonly ClientService $clientService) {}
 
-    #[Route('', methods: ['POST'])]
+    #[Route('/company', methods: ['POST'])]
     public function getClients(Request $request): JsonResponse
     {
         return $this->clientService->getClients($request);
