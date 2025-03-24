@@ -36,10 +36,13 @@ class CompanyService
 
     public function findCompany(int $id): JsonResponse
     {
-        $company = $this->entityManager->getRepository(Company::class)->find($id);
-        if (!$company) {
-            return $this->responseService->error([], 'Company not found', Response::HTTP_NOT_FOUND);
+        $user = $this->security->getUser();
+
+        if ($id !== $user->getCompany()?->getId()) {
+            return $this->responseService->error([], 'Users not related to these Companies', Response::HTTP_NOT_FOUND);
         }
+
+        $company = $this->entityManager->getRepository(Company::class)->find($id);;
 
         return $this->responseService->success(
             $this->serializerService->serializeData($company, 'company:read')
