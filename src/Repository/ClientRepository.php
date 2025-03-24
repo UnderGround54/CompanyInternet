@@ -21,26 +21,14 @@ class ClientRepository extends ServiceEntityRepository
 
     /**
      *
-     * @param User $user
+     * @param $companyId
      * @return QueryBuilder
      */
-    public function findClientByUser(User $user): QueryBuilder
+    public function findClientCompany($companyId): QueryBuilder
     {
         return $this->createQueryBuilder('c')
             ->join('c.companies', 'comp')
-            ->join('comp.user', 'u')
-            ->where('u.id = :userId')
-            ->setParameter('userId', $user->getId());
-    }
-
-    /**
-     *
-     * @return QueryBuilder
-     */
-    public function findClientCompany(): QueryBuilder
-    {
-        return $this->createQueryBuilder('c')
-            ->join('c.companies', 'comp')
-            ->join('comp.user', 'u');
+            ->where('comp.id = :companyId')
+            ->setParameter('companyId', $companyId);
     }
 }

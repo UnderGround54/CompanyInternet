@@ -3,15 +3,15 @@
 namespace App\Service\ClientService;
 
 use App\Dto\ClientDto;
+use App\Dto\ClientListDto;
+use App\Dto\CompanyIdDto;
 use App\Entity\Company;
 use App\Entity\Client;
-use App\Entity\User;
 use App\Service\PaginationService;
 use App\Service\ResponseService;
 use App\Service\SerializerService;
 use App\Service\ValidateDataService;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,18 +28,14 @@ class ClientService
         private readonly PaginationService $paginationService,
         private readonly ValidateDataService  $validateDataService,
         private readonly UserPasswordHasherInterface $passwordHasher,
-        private readonly Security $security
     ) {}
 
     public function getClients(Request $request): JsonResponse
     {
-        $user = $this->security->getUser();
+        $CompanyIdDto = $this->serializerService->deserializeData($request->getContent(), CompanyIdDto::class);
 
-        if ($user instanceof User) {
-            $queryBuilder = $this->entityManager->getRepository(Client::class)->findClientByUser($user);
-        } else {
-            $queryBuilder = $this->entityManager->getRepository(Client::class)->findClientCompany();
-        }
+        $queryBuilder = $this->entityManager->getRepository(Client::class)->findClientCompany($CompanyIdDto->companyId);
+
         $pagination = $this->paginationService->paginate($queryBuilder, $request);
 
         $pagination['items'] = $this->serializerService->serializeData($pagination['items'], 'client:read');
