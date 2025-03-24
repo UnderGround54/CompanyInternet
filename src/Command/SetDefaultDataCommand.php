@@ -65,13 +65,6 @@ class SetDefaultDataCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        /* Demande de confirmation avant d'exécuter la commande */
-
-        /*if (!$io->confirm('Êtes-vous sûr de vouloir changer les données de base ?', false)) {
-            $io->warning('L\'opération a été annulée.');
-            return Command::SUCCESS;
-        }*/
-
         $io->note('Loading...');
         $className = $input->getArgument('className');
         $dataPath  = dirname(__DIR__, 1) .$input->getArgument('dataPath');

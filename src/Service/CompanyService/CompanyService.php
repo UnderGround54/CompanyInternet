@@ -3,6 +3,7 @@
 namespace App\Service\CompanyService;
 
 use App\Entity\Company;
+use App\Entity\User;
 use App\Service\PaginationService;
 use App\Service\ResponseService;
 use App\Service\SerializerService;
@@ -26,9 +27,13 @@ class CompanyService
     {
         $user = $this->security->getUser();
 
-        $queryBuilder = $this->entityManager->getRepository(Company::class)->findCompanyByUser($user);
+        if ($user instanceof User) {
+            $queryBuilder = $this->entityManager->getRepository(Company::class)->findCompanyByUser($user);
+            $pagination = $this->paginationService->paginate($queryBuilder, $request);
+        } else {
+            $pagination = $this->paginationService->paginate(Company::class, $request);
+        }
 
-        $pagination = $this->paginationService->paginate($queryBuilder, $request);
         $pagination['items'] = $this->serializerService->serializeData($pagination['items'], 'company:read');
 
         return $this->responseService->success($pagination);
@@ -38,7 +43,7 @@ class CompanyService
     {
         $user = $this->security->getUser();
 
-        if ($id !== $user->getCompany()?->getId()) {
+        if ($id !== $user?->getCompany()?->getId()) {
             return $this->responseService->error([], 'Users not related to these Companies', Response::HTTP_NOT_FOUND);
         }
 

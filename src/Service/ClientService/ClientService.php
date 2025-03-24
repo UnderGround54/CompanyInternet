@@ -5,6 +5,7 @@ namespace App\Service\ClientService;
 use App\Dto\ClientDto;
 use App\Entity\Company;
 use App\Entity\Client;
+use App\Entity\User;
 use App\Service\PaginationService;
 use App\Service\ResponseService;
 use App\Service\SerializerService;
@@ -34,9 +35,13 @@ class ClientService
     {
         $user = $this->security->getUser();
 
-        $queryBuilder = $this->entityManager->getRepository(Client::class)->findClientByUser($user);
+        if ($user instanceof User) {
+            $queryBuilder = $this->entityManager->getRepository(Client::class)->findClientByUser($user);
+            $pagination = $this->paginationService->paginate($queryBuilder, $request);
+        } else {
+            $pagination = $this->paginationService->paginate(Client::class, $request);
+        }
 
-        $pagination = $this->paginationService->paginate($queryBuilder, $request);
         $pagination['items'] = $this->serializerService->serializeData($pagination['items'], 'client:read');
 
         return $this->responseService->success($pagination);
