@@ -13,15 +13,15 @@ abstract class Person implements UserInterface, PasswordAuthenticatedUserInterfa
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['client:read'])]
+    #[Groups(['client:read', 'company:read'])]
     protected ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['client:read', 'client:write'])]
+    #[Groups(['client:read', 'client:write', 'company:read'])]
     protected ?string $name = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['client:read', 'client:write'])]
+    #[Groups(['client:read', 'client:write', 'company:read'])]
     protected ?string $email = null;
 
     #[ORM\Column(length: 255)]
