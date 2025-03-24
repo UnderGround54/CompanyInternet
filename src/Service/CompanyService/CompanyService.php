@@ -7,6 +7,7 @@ use App\Service\PaginationService;
 use App\Service\ResponseService;
 use App\Service\SerializerService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,11 +19,16 @@ class CompanyService
         private readonly SerializerService $serializerService,
         private readonly ResponseService $responseService,
         private readonly PaginationService $paginationService,
+        private readonly Security $security
     ) {}
 
     public function getCompanies(Request $request): JsonResponse
     {
-        $pagination = $this->paginationService->paginate(Company::class, $request);
+        $user = $this->security->getUser();
+
+        $queryBuilder = $this->entityManager->getRepository(Company::class)->findCompanyByUser($user);
+
+        $pagination = $this->paginationService->paginate($queryBuilder, $request);
         $pagination['items'] = $this->serializerService->serializeData($pagination['items'], 'company:read');
 
         return $this->responseService->success($pagination);
