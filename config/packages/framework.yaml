@@ -1,5 +1,9 @@
 # see https://symfony.com/doc/current/reference/configuration/framework.html
 framework:
+    trusted_proxies: '127.0.0.1,REMOTE_ADDR'
+    http_client:
+        default_options:
+            verify_peer: false
     secret: '%env(APP_SECRET)%'
     annotations: false
     http_method_override: false
