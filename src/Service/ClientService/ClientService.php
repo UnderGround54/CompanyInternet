@@ -79,6 +79,7 @@ class ClientService
 
         $client->setName($clientDto->name);
         $client->setEmail($clientDto->email);
+        $client->setJob($clientDto->job);
         $client->addCompany($company);
         if ($clientDto->password) {
             $this->emailService->sendUserCredentialsEmail($clientDto->email, $clientDto->name, $clientDto->password, "https://www.adrware.mg/");

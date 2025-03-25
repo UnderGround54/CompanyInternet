@@ -44,7 +44,7 @@ class CompanyService
     {
         $user = $this->security->getUser();
 
-        if ($id !== $user?->getCompany()?->getId()) {
+        if ($user instanceof User && $id !== $user?->getCompany()?->getId()) {
             return $this->responseService->error([], 'Users not related to these Companies', Response::HTTP_NOT_FOUND);
         }
 

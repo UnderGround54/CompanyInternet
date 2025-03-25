@@ -28,6 +28,10 @@ abstract class Person implements UserInterface, PasswordAuthenticatedUserInterfa
     #[Groups(['client:write'])]
     protected ?string $password = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['client:read', 'client:write', 'company:read'])]
+    private ?string $job = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -79,5 +83,17 @@ abstract class Person implements UserInterface, PasswordAuthenticatedUserInterfa
     public function getUserIdentifier(): string
     {
         return $this->email; // Utilisé comme identifiant unique
+    }
+
+    public function getJob(): ?string
+    {
+        return $this->job;
+    }
+
+    public function setJob(?string $job): static
+    {
+        $this->job = $job;
+
+        return $this;
     }
 }

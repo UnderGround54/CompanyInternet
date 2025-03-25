@@ -11,5 +11,7 @@ class ClientDto
         public string $password,
 
         public int|string $companyId,
+
+        public string $job,
     ) {}
 }
