@@ -34,9 +34,9 @@ class ClientService
 
     public function getClients(Request $request): JsonResponse
     {
-        $CompanyIdDto = $this->serializerService->deserializeData($request->getContent(), CompanyIdDto::class);
+        $companyId = $request->attributes->get('companyId');
 
-        $queryBuilder = $this->entityManager->getRepository(Client::class)->findClientCompany($CompanyIdDto->companyId);
+        $queryBuilder = $this->entityManager->getRepository(Client::class)->findClientCompany($companyId);
 
         $pagination = $this->paginationService->paginate($queryBuilder, $request);
 
@@ -71,8 +71,7 @@ class ClientService
         if (count($errors) > 0) {
             return $this->responseService->error($this->validateDataService->formatValidationErrors($errors), 'Validation errors', Response::HTTP_BAD_REQUEST);
         }
-
-        $company = $this->entityManager->getRepository(Company::class)->find($clientDto->companyId);
+        $company = $this->entityManager->getRepository(Company::class)->find(intval($clientDto->companyId));
 
         if (!$company) {
             return $this->responseService->error([], 'Company not found', Response::HTTP_NOT_FOUND);
@@ -81,11 +80,11 @@ class ClientService
         $client->setName($clientDto->name);
         $client->setEmail($clientDto->email);
         $client->addCompany($company);
-
-        $this->emailService->sendUserCredentialsEmail($clientDto->email, $clientDto->name , $clientDto->password, "https://www.adrware.mg/");
-
-        $hashedPassword = $this->passwordHasher->hashPassword($client, $clientDto->password);
-        $client->setPassword($hashedPassword);
+        if ($clientDto->password) {
+            $this->emailService->sendUserCredentialsEmail($clientDto->email, $clientDto->name, $clientDto->password, "https://www.adrware.mg/");
+            $hashedPassword = $this->passwordHasher->hashPassword($client, $clientDto->password);
+            $client->setPassword($hashedPassword);
+        }
 
         $this->entityManager->persist($client);
         $this->entityManager->flush();

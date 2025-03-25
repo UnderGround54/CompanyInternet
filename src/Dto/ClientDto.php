@@ -10,6 +10,6 @@ class ClientDto
 
         public string $password,
 
-        public int $companyId,
+        public int|string $companyId,
     ) {}
 }
