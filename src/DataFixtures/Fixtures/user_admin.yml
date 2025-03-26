@@ -5,10 +5,12 @@ App\Entity\User:
   user_1:
     name: Admin Yas
     email: admin.yas@yoopmail.com
-    password: 123456
+    password: ''
     company: '@company_1'
+    job: 'Admin'
   user_2:
     name: Admin Orange
     email: admin.orange@yoopmail.com
-    password: 123456
+    password: ''
     company: '@company_2'
+    job: 'Admin'

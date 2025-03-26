@@ -14,6 +14,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
@@ -25,7 +26,8 @@ class SetDefaultDataCommand extends Command
 {
     public function __construct(
         private readonly EntityManagerInterface $em,
-        private readonly UserPasswordHasherInterface $passwordHasher
+        private readonly UserPasswordHasherInterface $passwordHasher,
+        private ContainerBagInterface $params
     )
     {
         parent::__construct();
@@ -122,7 +124,8 @@ class SetDefaultDataCommand extends Command
 
         foreach ($objects as $object) {
             if ($object instanceof User) {
-                $hashedPassword = $this->passwordHasher->hashPassword($object, $object->getPassword());
+                $password = $this->params->get('app.user.password');
+                $hashedPassword = $this->passwordHasher->hashPassword($object, $password);
                 $object->setPassword($hashedPassword);
             }
 

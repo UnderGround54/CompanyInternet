@@ -11,6 +11,7 @@
         "doctrine/doctrine-bundle": "^2.14",
         "doctrine/doctrine-migrations-bundle": "^3.4",
         "doctrine/orm": "^3.3",
+        "hautelook/alice-bundle": "^2.15",
         "lexik/jwt-authentication-bundle": "*",
         "nelmio/cors-bundle": "^2.5",
         "symfony/console": "6.4.*",
